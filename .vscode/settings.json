@@ -1,0 +1,17 @@
+{
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "cSpell.words": [
+        "dockle",
+        "trivy",
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true, // eslint
+        "source.fixAll.stylelint": true // Stylelint
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format"
+    },
+}
