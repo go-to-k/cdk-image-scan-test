@@ -1030,10 +1030,10 @@ case@1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-ecr-deployment@^2.5.30:
-  version "2.5.30"
-  resolved "https://registry.yarnpkg.com/cdk-ecr-deployment/-/cdk-ecr-deployment-2.5.30.tgz#08ff6d971dd81e7b02c214e3ed84ab83ebba0536"
-  integrity sha512-IFS/DD6OmNcXv24YKjjaz1sb04xxsoUb7vPYwx7kTBAOxOnT0CuAadF8/HVfM/YVoqoOPXCJe3ikAXy1iI0nKw==
+cdk-ecr-deployment@^3.0.48:
+  version "3.0.48"
+  resolved "https://registry.yarnpkg.com/cdk-ecr-deployment/-/cdk-ecr-deployment-3.0.48.tgz#68fe23ee814951cf9f6f7e9638d64e6350e91963"
+  integrity sha512-Eotu2/J8rAkB3/7H2LEJ3uDchGrQcThmfa07/2JBBKz8amP/EDF8hCK+I34tg013Tb5j7sJXtPAgiF++l2+gSg==
   dependencies:
     aws-cdk-lib "^2.0.0"
     constructs "^10.0.5"
