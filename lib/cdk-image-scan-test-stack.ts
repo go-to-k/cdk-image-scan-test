@@ -17,7 +17,7 @@ export class CdkImageScanTestStack extends Stack {
 
     const repository = new Repository(this, "ImageRepository", {
       removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteImages: true,
+      emptyOnDelete: true,
       imageScanOnPush: true,
     });
 
