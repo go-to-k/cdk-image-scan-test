@@ -38,8 +38,8 @@ export class CdkImageScanTestStack extends Stack {
     });
 
     const logBucket = new Bucket(this, "ScanLogsBucket", {
-      removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      // removalPolicy: RemovalPolicy.DESTROY,
+      // autoDeleteObjects: true,
     });
 
     const topic = Topic.fromTopicArn(
