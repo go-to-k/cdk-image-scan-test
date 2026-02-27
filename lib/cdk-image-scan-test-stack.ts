@@ -1,10 +1,17 @@
 import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import { DockerImageAsset } from "aws-cdk-lib/aws-ecr-assets";
+import { Bucket } from "aws-cdk-lib/aws-s3";
+import { Topic } from "aws-cdk-lib/aws-sns";
 import { DockerImageName, ECRDeployment } from "cdk-ecr-deployment";
 import { Construct } from "constructs";
-import { ImageScannerWithDockle } from "image-scanner-with-dockle";
-import { ImageScannerWithTrivy, Scanners, Severity } from "image-scanner-with-trivy";
+import {
+  ImageScannerWithTrivyV2,
+  ScanLogsOutput,
+  Scanners,
+  Severity,
+  TargetImagePlatform,
+} from "image-scanner-with-trivy";
 import { resolve } from "path";
 
 interface CdkImageScanTestStackProps extends StackProps {
@@ -25,30 +32,40 @@ export class CdkImageScanTestStack extends Stack {
       directory: resolve(__dirname, "../"),
     });
 
-    const imageScannerWithTrivy = new ImageScannerWithTrivy(this, "ImageScannerWithTrivy", {
+    const ecrDeployment = new ECRDeployment(this, "DeployImage", {
+      src: new DockerImageName(image.imageUri),
+      dest: new DockerImageName(`${repository.repositoryUri}:${props.ecrTag}`),
+    });
+
+    const logBucket = new Bucket(this, "ScanLogsBucket", {
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
+
+    const topic = Topic.fromTopicArn(
+      this,
+      "VulnsNotificationTopic",
+      Stack.of(this).formatArn({
+        service: "sns",
+        region: "us-east-1",
+        account: Stack.of(this).account,
+        resource: "main-CostCheck-BillingAlarmTopic",
+      }),
+    );
+
+    new ImageScannerWithTrivyV2(this, "ImageScannerWithTrivy", {
       imageUri: image.imageUri,
       repository: image.repository,
       ignoreUnfixed: true,
       severity: [Severity.CRITICAL],
       scanners: [Scanners.VULN, Scanners.SECRET],
-      exitCode: 1,
-      exitOnEol: 1,
-      trivyIgnore: ["CVE-2023-37920", "CVE-2019-14697 exp:2023-01-01", "generic-unwanted-rule"],
-      // memorySize: 4096,
-      platform: "linux/arm64",
+      targetImagePlatform: TargetImagePlatform.LINUX_ARM64,
+      vulnsNotificationTopic: topic,
+      blockConstructs: [ecrDeployment],
+      scanLogsOutput: ScanLogsOutput.s3({
+        bucket: logBucket,
+        prefix: "trivy-scan-logs",
+      }),
     });
-
-    const imageScannerWithDockle = new ImageScannerWithDockle(this, "ImageScannerWithDockle", {
-      imageUri: image.imageUri,
-      repository: image.repository,
-      ignore: ["CIS-DI-0009"], // See https://github.com/goodwithtech/dockle#checkpoint-summary
-    });
-
-    const ecrDeployment = new ECRDeployment(this, "DeployImage", {
-      src: new DockerImageName(image.imageUri),
-      dest: new DockerImageName(`${repository.repositoryUri}:${props.ecrTag}`),
-    });
-    ecrDeployment.node.addDependency(imageScannerWithTrivy);
-    ecrDeployment.node.addDependency(imageScannerWithDockle);
   }
 }

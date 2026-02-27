@@ -1443,10 +1443,10 @@ image-scanner-with-dockle@^1.1.0:
   resolved "https://registry.yarnpkg.com/image-scanner-with-dockle/-/image-scanner-with-dockle-1.1.0.tgz#cfc54c53687b739d119ccca275bbe86427227496"
   integrity sha512-VSavXam84wKx8rPC4JHJhbaPrxgdJc2Z2GQUUj8wgp4Jox/wG9qG8kr6FW/l7FQkRlFM+gPFN8g2RmXlWuFUig==
 
-image-scanner-with-trivy@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/image-scanner-with-trivy/-/image-scanner-with-trivy-2.3.0.tgz#5337ec2289895d144cd585b583f84f7359fa2e55"
-  integrity sha512-vDe356Yx3at5Ev+zc/kdu2CENDXx6QhfiSvAwLJPjVXZxbr3qYBGLJ6jyxFIlIqCXFty9jlCsItOjDtxG9xA1Q==
+image-scanner-with-trivy@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/image-scanner-with-trivy/-/image-scanner-with-trivy-2.4.0.tgz#3a3087ee14636b1a06160369bcd591e06a4b2098"
+  integrity sha512-NACiAzBtE3j6TV5nNpFkYwQ+/5KGeJ88BrqJwQ0UpXadK+R9bb+CooZE9GZkj43uzKG9wiCdKNj3DdyeD3v9aA==
 
 import-local@^3.0.2:
   version "3.1.0"
