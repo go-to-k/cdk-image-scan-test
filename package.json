@@ -24,7 +24,7 @@
     "cdk-ecr-deployment": "^3.0.48",
     "constructs": "^10.0.0",
     "image-scanner-with-dockle": "^1.1.0",
-    "image-scanner-with-trivy": "2.2.0",
+    "image-scanner-with-trivy": "2.3.0",
     "source-map-support": "^0.5.21"
   },
   "resolutions": {
