@@ -1,6 +1,7 @@
 import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import { DockerImageAsset } from "aws-cdk-lib/aws-ecr-assets";
+import { LogGroup } from "aws-cdk-lib/aws-logs";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import { DockerImageName, ECRDeployment } from "cdk-ecr-deployment";
@@ -42,6 +43,10 @@ export class CdkImageScanTestStack extends Stack {
       // autoDeleteObjects: true,
     });
 
+    const logs = new LogGroup(this, "ScanLogsGroup", {
+      // removalPolicy: RemovalPolicy.DESTROY,
+    });
+
     const topic = Topic.fromTopicArn(
       this,
       "VulnsNotificationTopic",
@@ -62,9 +67,12 @@ export class CdkImageScanTestStack extends Stack {
       targetImagePlatform: TargetImagePlatform.LINUX_ARM64,
       vulnsNotificationTopic: topic,
       blockConstructs: [ecrDeployment],
-      scanLogsOutput: ScanLogsOutput.s3({
-        bucket: logBucket,
-        prefix: "trivy-scan-logs",
+      // scanLogsOutput: ScanLogsOutput.s3({
+      //   bucket: logBucket,
+      //   prefix: "trivy-scan-logs",
+      // }),
+      scanLogsOutput: ScanLogsOutput.cloudWatchLogs({
+        logGroup: logs,
       }),
     });
   }
