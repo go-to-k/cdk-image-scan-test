@@ -1,11 +1,19 @@
 import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import { DockerImageAsset } from "aws-cdk-lib/aws-ecr-assets";
+import { Key } from "aws-cdk-lib/aws-kms";
 import { LogGroup } from "aws-cdk-lib/aws-logs";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import { DockerImageName, ECRDeployment } from "cdk-ecr-deployment";
 import { Construct } from "constructs";
+import {
+  EcrScanVerifier,
+  Severity as EcrSeverity,
+  SbomFormat,
+  SbomOutput,
+  ScanConfig,
+} from "ecr-scan-verifier";
 import {
   ImageScannerWithTrivyV2,
   ScanLogsOutput,
@@ -58,22 +66,47 @@ export class CdkImageScanTestStack extends Stack {
       }),
     );
 
-    new ImageScannerWithTrivyV2(this, "ImageScannerWithTrivy", {
-      imageUri: image.imageUri,
-      repository: image.repository,
-      ignoreUnfixed: true,
-      severity: [Severity.CRITICAL],
-      scanners: [Scanners.VULN, Scanners.SECRET],
-      targetImagePlatform: TargetImagePlatform.LINUX_ARM64,
+    // new ImageScannerWithTrivyV2(this, "ImageScannerWithTrivy", {
+    //   imageUri: image.imageUri,
+    //   repository: image.repository,
+    //   ignoreUnfixed: true,
+    //   severity: [Severity.CRITICAL],
+    //   scanners: [Scanners.VULN, Scanners.SECRET],
+    //   targetImagePlatform: TargetImagePlatform.LINUX_ARM64,
+    //   vulnsNotificationTopic: topic,
+    //   blockConstructs: [ecrDeployment],
+    //   // scanLogsOutput: ScanLogsOutput.s3({
+    //   //   bucket: logBucket,
+    //   //   prefix: "trivy-scan-logs",
+    //   // }),
+    //   scanLogsOutput: ScanLogsOutput.cloudWatchLogs({
+    //     logGroup: logs,
+    //   }),
+    // });
+
+    const key = new Key(this, "SbomEncryptionKey", {
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+    new EcrScanVerifier(this, "EcrScanVerifier", {
+      repository: repository,
+      imageTag: props.ecrTag,
+      scanConfig: ScanConfig.basic(),
+      // scanConfig: ScanConfig.enhanced(),
+      severity: [EcrSeverity.CRITICAL, EcrSeverity.HIGH],
       vulnsNotificationTopic: topic,
       blockConstructs: [ecrDeployment],
-      // scanLogsOutput: ScanLogsOutput.s3({
-      //   bucket: logBucket,
-      //   prefix: "trivy-scan-logs",
-      // }),
-      scanLogsOutput: ScanLogsOutput.cloudWatchLogs({
-        logGroup: logs,
+      scanLogsOutput: ScanLogsOutput.s3({
+        bucket: logBucket,
+        prefix: "ecr-scan-logs",
       }),
+      // scanLogsOutput: ScanLogsOutput.cloudWatchLogs({
+      //   logGroup: logs,
+      // }),
+      // sbomOutput: SbomOutput.cycloneDx14({
+      //   bucket: logBucket,
+      //   prefix: "sbom-output",
+      //   encryptionKey: key,
+      // }),
     });
   }
 }
