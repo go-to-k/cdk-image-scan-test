@@ -25,6 +25,7 @@
     "constructs": "^10.5.1",
     "image-scanner-with-dockle": "^1.1.0",
     "image-scanner-with-trivy": "2.4.0",
+    "ecr-scan-verifier": "^0.0.3",
     "source-map-support": "^0.5.21"
   }
 }
