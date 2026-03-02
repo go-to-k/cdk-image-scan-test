@@ -90,11 +90,12 @@ export class CdkImageScanTestStack extends Stack {
     new EcrScanVerifier(this, "EcrScanVerifier", {
       repository: image.repository,
       imageTag: image.assetHash,
-      scanConfig: ScanConfig.basic(),
+      scanConfig: ScanConfig.enhanced(),
       // scanConfig: ScanConfig.enhanced(),
       severity: [EcrSeverity.CRITICAL, EcrSeverity.HIGH, EcrSeverity.MEDIUM],
       vulnsNotificationTopic: topic,
       blockConstructs: [ecrDeployment],
+      defaultLogGroup: logs,
       scanLogsOutput: ScanLogsOutput.s3({
         bucket: logBucket,
         prefix: "ecr-scan-logs",
@@ -102,11 +103,11 @@ export class CdkImageScanTestStack extends Stack {
       // scanLogsOutput: ScanLogsOutput.cloudWatchLogs({
       //   logGroup: logs,
       // }),
-      // sbomOutput: SbomOutput.cycloneDx14({
-      //   bucket: logBucket,
-      //   prefix: "sbom-output",
-      //   encryptionKey: key,
-      // }),
+      sbomOutput: SbomOutput.cycloneDx14({
+        bucket: logBucket,
+        prefix: "sbom-output",
+        encryptionKey: key,
+      }),
     });
   }
 }
