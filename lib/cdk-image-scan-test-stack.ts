@@ -88,8 +88,8 @@ export class CdkImageScanTestStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
     new EcrScanVerifier(this, "EcrScanVerifier", {
-      repository: repository,
-      imageTag: props.ecrTag,
+      repository: image.repository,
+      imageTag: image.assetHash,
       scanConfig: ScanConfig.basic(),
       // scanConfig: ScanConfig.enhanced(),
       severity: [EcrSeverity.CRITICAL, EcrSeverity.HIGH, EcrSeverity.MEDIUM],
