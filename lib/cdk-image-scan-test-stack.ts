@@ -92,7 +92,7 @@ export class CdkImageScanTestStack extends Stack {
       imageTag: props.ecrTag,
       scanConfig: ScanConfig.basic(),
       // scanConfig: ScanConfig.enhanced(),
-      severity: [EcrSeverity.CRITICAL, EcrSeverity.HIGH],
+      severity: [EcrSeverity.CRITICAL, EcrSeverity.HIGH, EcrSeverity.MEDIUM],
       vulnsNotificationTopic: topic,
       blockConstructs: [ecrDeployment],
       scanLogsOutput: ScanLogsOutput.s3({
